@@ -11,7 +11,7 @@ import os
 MODEL_PATH = "keras_model.h5"
 LABELS_PATH = "labels.txt"
 DB_FILE = "academic.db"
-SAIDA_TIMEOUT = 60 # Segundos sem ver o aluno para registrar "saida"
+SAIDA_TIMEOUT = 5 # Segundos sem ver o aluno para registrar "saida"
 CONFIDENCE_THRESHOLD = 0.95 # Confiança mínima (95%)
 # --- FIM DAS CONFIGURAÇÕES ---
 
@@ -67,7 +67,7 @@ def check_for_saida(conn):
     for ra, info in alunos_presentes.items():
         segundos_desde_visto = (agora - info['last_seen']).total_seconds()
         if segundos_desde_visto > SAIDA_TIMEOUT:
-            log_presence(conn, ra, 'saida')
+            log_presence(conn, ra, 'confirmacao de presenca')
             ras_para_remover.append(ra)
     for ra in ras_para_remover:
         del alunos_presentes[ra]
@@ -116,10 +116,10 @@ while True:
             
             # Lógica de ENTRADA: Se o aluno não está na lista, registre.
             if ra not in alunos_presentes:
-                log_presence(db_conn, ra, 'entrada')
+                log_presence(db_conn, ra, 'inicio de leitura')
             
             # De qualquer forma, atualize a última vez que o aluno foi visto
-            alunos_presentes[ra] = {'last_seen': agora, 'status': 'entrada'}
+            alunos_presentes[ra] = {'last_seen': agora, 'status': 'inicio de leitura'}
         else:
             nome_display = "no_one"
     else:
@@ -142,7 +142,7 @@ while True:
 print("[INFO] Encerrando aplicação...")
 # Registra a saída de todos que ainda estavam "presentes"
 for ra in alunos_presentes:
-    log_presence(db_conn, ra, 'saida')
+    log_presence(db_conn, ra, 'confirmacao de presenca')
 
 video_capture.release()
 cv2.destroyAllWindows()

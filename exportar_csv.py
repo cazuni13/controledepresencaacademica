@@ -51,7 +51,7 @@ try:
         writer = csv.writer(csvfile, delimiter=';')
         
         # Escreve o cabeçalho
-        writer.writerow(['Data_Hora', 'Status (Entrada/Saida)', 'RA', 'Nome_Completo'])
+        writer.writerow(['Data_Hora', 'Status', 'RA', 'Nome_Completo'])
         
         # Escreve os dados
         writer.writerows(rows)

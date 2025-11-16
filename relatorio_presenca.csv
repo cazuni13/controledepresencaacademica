@@ -1,4 +1,4 @@
-Data_Hora;Status (Entrada/Saida);RA;Nome_Completo
+Data_Hora;Status;RA;Nome_Completo
 2025-11-15 22:09:28;entrada;victor-2022024077;Victor A. M. dos Santos
 2025-11-15 22:09:29;entrada;joao-2023014145;João Cazuni
 2025-11-15 22:10:09;saida;victor-2022024077;Victor A. M. dos Santos
@@ -15,3 +15,15 @@ Data_Hora;Status (Entrada/Saida);RA;Nome_Completo
 2025-11-15 22:39:52;entrada;victor-2022024077;Victor A. M. dos Santos
 2025-11-15 22:41:18;saida;joao-2023014145;João Cazuni
 2025-11-15 22:41:18;saida;victor-2022024077;Victor A. M. dos Santos
+2025-11-15 22:45:45;entrada;victor-2022024077;Victor A. M. dos Santos
+2025-11-15 22:45:45;entrada;joao-2023014145;João Cazuni
+2025-11-15 22:45:55;saida;victor-2022024077;Victor A. M. dos Santos
+2025-11-15 22:46:21;saida;joao-2023014145;João Cazuni
+2025-11-15 22:46:24;entrada;victor-2022024077;Victor A. M. dos Santos
+2025-11-15 22:46:26;entrada;joao-2023014145;João Cazuni
+2025-11-15 22:46:41;saida;victor-2022024077;Victor A. M. dos Santos
+2025-11-15 22:46:41;saida;joao-2023014145;João Cazuni
+2025-11-15 22:53:09;inicio de leitura;victor-2022024077;Victor A. M. dos Santos
+2025-11-15 22:53:11;inicio de leitura;joao-2023014145;João Cazuni
+2025-11-15 22:53:15;confirmacao de presenca;victor-2022024077;Victor A. M. dos Santos
+2025-11-15 22:53:34;confirmacao de presenca;joao-2023014145;João Cazuni
