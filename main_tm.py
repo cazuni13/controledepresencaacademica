@@ -109,7 +109,7 @@ while True:
     # 6. Lógica de Presença
     if confianca > CONFIDENCE_THRESHOLD:
         # Se for uma classe de aluno (e não a classe "Fundo")
-        if ra_predito != "Fundo": 
+        if ra_predito != "no_one": 
             ra = ra_predito
             ra_display = ra
             nome_display = get_student_info(db_conn, ra)
@@ -121,7 +121,7 @@ while True:
             # De qualquer forma, atualize a última vez que o aluno foi visto
             alunos_presentes[ra] = {'last_seen': agora, 'status': 'entrada'}
         else:
-            nome_display = "Fundo"
+            nome_display = "no_one"
     else:
         nome_display = "Desconhecido"
 
