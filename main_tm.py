@@ -7,28 +7,27 @@ from datetime import datetime
 import sys
 import os
 
-# --- CONFIGURAÇÕES ---
+# configurações
 MODEL_PATH = "keras_model.h5"
 LABELS_PATH = "labels.txt"
 DB_FILE = "academic.db"
-SAIDA_TIMEOUT = 5 # Segundos sem ver o aluno para registrar "saida"
-CONFIDENCE_THRESHOLD = 0.95 # Confiança mínima (95%)
-# --- FIM DAS CONFIGURAÇÕES ---
+SAIDA_TIMEOUT = 5 # Segundos sem ver o aluno para registrar presença
+CONFIDENCE_THRESHOLD = 0.80 # Confiança mínima (95%)
 
-# 1. Carregar o modelo e os labels
+#Carregamento do modelo e os labels
 try:
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' # Ignora avisos do TensorFlow
     model = keras.models.load_model(MODEL_PATH, compile=False)
     with open(LABELS_PATH, 'r') as f:
-        # Pega apenas o nome da classe (ex: "12345" ou "Fundo")
+        # Pega apenas o nome da classe (ex: "joao-2023014145" ou "Fundo")
         labels = [line.strip().split(' ', 1)[1] for line in f if line.strip()]
     print(f"[INFO] Modelo e labels carregados. Classes: {labels}")
 except Exception as e:
     print(f"[ERRO] Falha ao carregar modelo/labels: {e}")
     sys.exit(1)
 
-# 2. Funções do Banco de Dados
-alunos_presentes = {} # Dicionário para rastrear quem está na sala
+#Funções do Banco de Dados
+alunos_presentes = {}
 
 def connect_db():
     try:
@@ -61,7 +60,7 @@ def log_presence(conn, ra, status):
         print(f"Erro ao registrar presença para {ra}: {e}")
 
 def check_for_saida(conn):
-    """Verifica se algum aluno presente atingiu o timeout para 'saida'."""
+    """Verifica se algum aluno presente atingiu o timeout para confirmacao."""
     agora = datetime.now()
     ras_para_remover = []
     for ra, info in alunos_presentes.items():
@@ -72,15 +71,15 @@ def check_for_saida(conn):
     for ra in ras_para_remover:
         del alunos_presentes[ra]
 
-# 3. Início da Execução
+# Início da Execução
 db_conn = connect_db()
 if db_conn is None:
     sys.exit("Falha na conexão com o banco de dados. Saindo.")
 
 print("[INFO] Iniciando câmera... (Pressione 'q' para sair)")
-video_capture = cv2.VideoCapture(0) # 0 para a webcam padrão
+video_capture = cv2.VideoCapture(0)
 
-# --- LOOP PRINCIPAL ---
+#LOOP PRINCIPAL
 while True:
     ret, frame = video_capture.read()
     if not ret:
@@ -89,15 +88,14 @@ while True:
 
     agora = datetime.now()
     
-    # 4. Pré-processamento da Imagem (padrão do Teachable Machine)
+    #Pré-processamento da Imagem (padrão do Teachable Machine)
     img_resized = cv2.resize(frame, (224, 224))
     img_array = np.asarray(img_resized, dtype=np.float32)
     img_normalized = (img_array / 127.0) - 1
     data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
     data[0] = img_normalized
 
-    # 5. Fazer a Predição (CNN em ação)
-    # verbose=0 desliga os logs de "predicting" do TensorFlow
+    #Fazer a Predição
     prediction = model.predict(data, verbose=0) 
     index = np.argmax(prediction)
     ra_predito = labels[index]
@@ -106,7 +104,7 @@ while True:
     nome_display = "---"
     ra_display = "---"
 
-    # 6. Lógica de Presença
+    #Lógica de Presença
     if confianca > CONFIDENCE_THRESHOLD:
         # Se for uma classe de aluno (e não a classe "Fundo")
         if ra_predito != "no_one": 
@@ -125,10 +123,10 @@ while True:
     else:
         nome_display = "Desconhecido"
 
-    # 7. Lógica de SAÍDA (Verifica timeouts)
+    #Lógica de confirmação
     check_for_saida(db_conn)
 
-    # 8. Exibir informações na tela
+    # Exibir informações na tela
     cv2.putText(frame, f"RA: {ra_display}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
     cv2.putText(frame, f"Nome: {nome_display}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
     cv2.putText(frame, f"Confianca: {confianca*100:.2f}%", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)

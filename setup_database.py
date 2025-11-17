@@ -6,7 +6,7 @@ try:
     conn = sqlite3.connect('academic.db')
     cursor = conn.cursor()
 
-    # 1. Tabela de Alunos (Guarda o RA e o Nome)
+    # Tabela de Alunos (Guarda o RA e o Nome)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS alunos (
             ra TEXT PRIMARY KEY NOT NULL,
@@ -14,7 +14,7 @@ try:
         )
     ''')
 
-    # 2. Tabela de Presença (Guarda o histórico de entradas/saídas)
+    # Tabela de Presença (Guarda o histórico de presença)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS presenca (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

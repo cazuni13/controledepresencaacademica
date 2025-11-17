@@ -12,13 +12,13 @@ print(f"Iniciando exportação do banco '{DB_FILE}' para '{CSV_FILE}'...")
 print(f"Ignorando registros com o RA: '{RA_PARA_IGNORAR}'")
 
 try:
-    # 1. Conectar ao banco de dados
+    #Conectar ao banco de dados
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
 
-    # 2. Criar a consulta SQL
-    # Juntamos (JOIN) as tabelas para pegar o nome
-    # e filtramos (WHERE) para remover o RA indesejado.
+    #Criar a consulta SQL
+    #Junta (JOIN) as tabelas para pegar o nome
+    #filtro (WHERE) para remover o RA indesejado.
     query = f"""
     SELECT
         p.data_hora,
@@ -30,13 +30,13 @@ try:
     LEFT JOIN
         alunos AS a ON p.aluno_ra = a.ra
     WHERE
-        p.aluno_ra != ?  -- <--- ESTA É A MUDANÇA
+        p.aluno_ra != ?  --
     ORDER BY
         p.data_hora
     """
     
-    # 3. Executar a consulta
-    # Passamos o RA a ignorar como um parâmetro seguro
+    #Executar a consulta
+    #Passamos o RA a ignorar como um parâmetro seguro
     cursor.execute(query, (RA_PARA_IGNORAR,))
     rows = cursor.fetchall()
 
@@ -46,7 +46,7 @@ try:
 
     print(f"Encontrados {len(rows)} registros válidos. Escrevendo no arquivo CSV...")
 
-    # 4. Escrever no arquivo CSV
+    # Escrever no arquivo CSV
     with open(CSV_FILE, 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile, delimiter=';')
         
@@ -64,6 +64,6 @@ except sqlite3.Error as e:
 except Exception as e:
     print(f"[ERRO INESPERADO]: {e}")
 finally:
-    # 5. Fechar a conexão com o banco
+    #Fechar a conexão com o banco
     if 'conn' in locals() and conn:
         conn.close()
